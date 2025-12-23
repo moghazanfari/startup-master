@@ -1,0 +1,107 @@
+/* =============================================================================
+   1. 3D ANIMATED GRID BACKGROUND
+   Settings for the moving "retro-wave" style floor in the Hero section.
+   ============================================================================= */
+
+/* The parent container that establishes the 3D depth */
+.perspective-container {
+  perspective: 1000px; /* Determines how "deep" the scene looks */
+  overflow: hidden; /* Hides the grid edges that extend beyond the screen */
+}
+
+/* The actual grid plane */
+.grid-floor {
+  position: absolute;
+
+  /* Dimensions must be significantly larger than the viewport 
+     to prevent empty spaces from appearing when the plane is tilted */
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+
+  /* Rotates the plane to create the flat "floor" effect */
+  transform: rotateX(75deg);
+
+  /* Draws the grid lines using gradients */
+  background-image: linear-gradient(
+      to right,
+      rgba(59, 130, 246, 0.4) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, rgba(59, 130, 246, 0.4) 1px, transparent 1px);
+
+  /* Size of each square cell. 
+     IMPORTANT: This must match the movement distance in the animation below. */
+  background-size: 80px 80px;
+
+  /* Optimization: prevents the browser from rendering the back of the element */
+  backface-visibility: hidden;
+}
+
+/* The infinite loop animation logic */
+@keyframes gridMove {
+  0% {
+    transform: rotateX(75deg) translateY(0);
+  }
+  100% {
+    /* We move exactly 80px (one square size) to create a seamless loop.
+       If this value differs from 'background-size', the animation will jump. */
+    transform: rotateX(75deg) translateY(80px);
+  }
+}
+
+/* Utility class to apply the animation */
+.animate-grid {
+  animation: gridMove 3s linear infinite;
+}
+
+/* =============================================================================
+   2. PARTNER LOGOS MARQUEE
+   Settings for the infinite scrolling strip and hover interactions.
+   ============================================================================= */
+
+/* Base styling for individual logos */
+.logo-item {
+  height: 48px; /* Enforce consistent height */
+  width: auto;
+  object-fit: contain;
+
+  /* DEFAULT STATE: Monochrome White */
+  /* brightness(0) makes it black, invert(1) turns it pure white */
+  filter: brightness(0) invert(1);
+  opacity: 0.5;
+
+  /* Smooth transition for hover effects */
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  /* Prevent user from highlighting the image */
+  user-select: none;
+}
+
+/* HOVER STATE: Reveal original colors */
+.logo-item:hover {
+  filter: none; /* Removes the monochrome filter */
+  opacity: 1; /* Full visibility */
+  transform: scale(1.1); /* Subtle zoom effect */
+}
+
+/* Horizontal scrolling animation logic */
+@keyframes infinite-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    /* Move left by 50% of the container's width.
+       (Because the logo list is duplicated in HTML, moving 50% reaches the start of the duplicate) */
+    transform: translateX(-50%);
+  }
+}
+
+/* Utility class to apply the scroll */
+.animate-infinite-scroll {
+  animation: infinite-scroll 40s linear infinite;
+}
